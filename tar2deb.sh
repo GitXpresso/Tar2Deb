@@ -21,8 +21,26 @@ BCyan=$(tput setaf 6; tput bold)
 BWhite=$(tput setaf 7; tput bold)
 echo -e "${BBlack}installing required packages${NoColor}"
 # Install Zen Browser to create .deb package
+# List of packages to check and install
+packages=("tar" "wget" "build-essential" "imagemagick" "devscripts" "debhelper" "curl" "bash" "busybox" "libasound-dev")
+
+# Update package list
 sudo apt update
-sudo apt-get install tar wget build-essential imagemagick devscripts debhelper curl bash busybox libasound-dev -y
+clear
+# Loop through each package
+for package in "${packages[@]}"; do
+    # Check if the package is installed
+    dpkg -l | grep -qw "$package"
+    
+    if [ $? -eq 0 ]; then
+        echo "$package is already installed. Skipping."
+    else
+        echo "$package is not installed. Installing..."
+        sudo apt install -y "$package"
+    fi
+    sleep 1
+
+done
 clear
 # Edit the Export Variables in order for this file to work successfully
 #!/bin/bash
