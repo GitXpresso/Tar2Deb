@@ -11,3 +11,16 @@
 </div>
 
 ## How to use Tar2Deb
+when you get to this part
+```
+Please enter the URL of the tar file: 
+```
+first find a tar file from the website, example: `https://basilisk-browser.org/download.html`
+then hover over the blue highlited link and right click and click "copy link address"
+then paste the link 
+should look like this
+![](./images/chrome.png)
+the paste your link to the terminal like this
+![](./images/vscode.png)
+then click enter
+t

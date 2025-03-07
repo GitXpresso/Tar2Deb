@@ -3,7 +3,7 @@ BBlack=$(tput setaf 0; tput bold)
 NoColor=$(tput sgr0)
 # Function to check if input is a number
 is_letter() {
-    [[ "$1" =~ ^[Aa-zZ]+$ ]];
+    [[ "$1" =~ ^[Aa-zZ2]+$ ]];
 }
 
 # Prompt user for input

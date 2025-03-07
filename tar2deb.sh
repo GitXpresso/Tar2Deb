@@ -69,8 +69,9 @@ done
 # Call loading animation in the background
 # Check if the tar file is valid before proceeding
 if ! check_tar_validity "$DEST_FILE"; then
-    echo "Error: The downloaded file is not a valid tar file. run tar2deb again and try again with a valid url, Exiting."
-    exit 1
+    clear
+    echo "Error: The downloaded file is not a valid url, running tar2deb again "
+    bash ./tar2deb.sh
 fi
 
 # Extract the tar file if it's valid
