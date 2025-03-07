@@ -93,7 +93,7 @@ if ! check_tar_validity "$DEST_FILE"; then
 fi
 
 # Extract the tar file if it's valid
-TAR_DIR=$(tar -xvf ~/downloads/zen.linux-x86_64.tar.xz -C ~/ | cut -d / -f1 | uniq) &
+TAR_DIR=$(tar -xvf $tarfile -C ~/ | cut -d / -f1 | uniq) &
 pid=$!
 
 spin='-\|/'

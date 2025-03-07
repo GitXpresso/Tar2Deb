@@ -23,4 +23,6 @@ should look like this
 the paste your link to the terminal like this
 ![](./images/vscode.png)
 then click enter
-t
+once you reach naming your package
+pick letters allowed all numbers are invalid except 2
+should look like this 
