@@ -38,7 +38,7 @@ for package in "${packages[@]}"; do
         echo "$package is not installed. Installing..."
         sudo apt install -y "$package"
     fi
-    sleep 1
+    sleep 0.2
 
 done
 clear
@@ -71,8 +71,8 @@ while true; do
 done
 
 # Get the filename and destination path
-FILENAME=$(basename "$TAR_URL")
-DEST_FILE="$HOME/$FILENAME"
+tarfile=$(basename "$TAR_URL")
+DEST_FILE="$HOME/$tarfile"
 
 # Download the file using wget
 wget -P ~/ -nv --progress=bar:force "$TAR_URL" 2>&1 | tee /dev/null | sed -u 's/\([0-9]*\)%/\1%/' | awk '{print "\rDownloading: "$0; fflush();}' > /dev/null &
@@ -88,12 +88,12 @@ done
 # Check if the tar file is valid before proceeding
 if ! check_tar_validity "$DEST_FILE"; then
     clear
-    echo "Error: The downloaded file is not a valid url, running tar2deb again "
-    bash ./tar2deb.sh
+    echo "Error: The downloaded file is not a valid url, executable tar2deb with valid download url"
+    exit 1
 fi
 
 # Extract the tar file if it's valid
-TAR_DIR=$(tar -xvf $tarfile -C ~/ | cut -d / -f1 | uniq) &
+TAR_DIR=$(tar -xvf ~/$tarfile -C ~/ | cut -d / -f1 | uniq) &
 pid=$!
 
 spin='-\|/'
