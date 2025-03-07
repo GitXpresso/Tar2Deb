@@ -235,10 +235,6 @@ Description: $Description
 EOF
 mkdir -p ~/$DEB_DIR/usr/bin/
 find $HOME/$TAR_DIR -type f -exec file {} + | grep -i 'executable' | grep -vi 'binary' | cut -d: -f1 | grep -v -E 'glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|*.py|blender-softwaregl|blender-system-info.sh|blender-thumbnailer'| while read -r file; do busybox ln -s "$file" $HOME/$DEB_DIR/usr/bin/; done
-find $TAR_DIR -type f -executable -not -name "*.so" -not -name "*.a" -exec file {} \; | grep -E "script|text" | while read -r file; do
-  # Extract the actual file path and move it to the target directory
-  mv "$file" $HOME/$DEB_DIR/usr/bin
-done
 
 # Specify the word to search for in the second directory
 
