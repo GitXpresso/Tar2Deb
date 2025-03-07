@@ -1,6 +1,6 @@
 <br/>
 <div align="center">
-    <img src="https://github.com/GitXpresso/Tar2Deb/blob/main/images/Tar2Deb.png?raw=true" alt="Logo" width="150" height="150">
+    <img src="https://github.com/GitXpresso/Tar2Deb/blob/main/images/Tar2Deb.png?raw=true" alt="Logo" width="" height="150">
   </a>
 
   <h3 align="center"></h3>
