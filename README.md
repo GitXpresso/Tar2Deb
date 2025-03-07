@@ -1,9 +1,9 @@
 <br/>
 <div align="center">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" alt="Logo" width="150" height="150">
+    <img src="https://github.com/GitXpresso/Tar2Deb/blob/main/images/Tar2Deb.png?raw=true" alt="Logo" width="150" height="150">
   </a>
 
-  <h3 align="center">Tar2Deb</h3>
+  <h3 align="center"></h3>
 
   <p align="center">
        Convert almost any extracted tar file into a debian file.
