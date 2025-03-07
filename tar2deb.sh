@@ -111,6 +111,7 @@ export tarfile="$DEST_FILE"
 # Clean up by removing the tar file
 rm -rf "$DEST_FILE"
 printf "\nExtraction complete!\n"
+clear
 is_letter() {
     [[ "$1" =~ ^[Aa-zZ2]+$ ]];
 }

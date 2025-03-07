@@ -26,3 +26,4 @@ then click enter
 once you reach naming your package
 pick letters allowed all numbers are invalid except 2
 should look like this 
+![](./images/packagename.png)
