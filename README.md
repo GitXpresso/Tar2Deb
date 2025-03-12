@@ -10,20 +10,21 @@
     <br/>
 </div>
 
+## How to install Tar2Deb
+Ubuntu PPA
+```
+sudo add-apt-repository ppa:gitxpresso/tar2deb
+
+sudo apt update
+```
 ## How to use Tar2Deb
 when you get to this part
 ```
 Please enter the URL of the tar file: 
 ```
-first find a tar file from the website, example: `https://basilisk-browser.org/download.html`
-then hover over the blue highlited link and right click and click "copy link address"
-then paste the link 
+paste the copied url link to the terminal
 should look like this
-![](./images/chrome.png)
-the paste your link to the terminal like this
-![](./images/vscode.png)
-then click enter
-once you reach naming your package
-pick letters allowed all numbers are invalid except 2
-should look like this 
-![](./images/packagename.png)
+```
+Please enter the URL of the tar file:  https://dl.basilisk-browser.org/basilisk-20250220145201.linux-x86_64-gtk2.tar.xz
+```
+once you have pasted the url press enter
