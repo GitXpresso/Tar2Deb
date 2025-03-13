@@ -1,0 +1,3 @@
+Tar2Deb (1.0.0)
+
+* added a feature if found "start-tor-browser" in the $DEB_DIR/usr/bin directory then it will be rename to "tor-browser". 2:09 Mar 13 2025

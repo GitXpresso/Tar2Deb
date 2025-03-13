@@ -125,7 +125,7 @@ while true; do
         read -p "do you want to change the name of your package? (yes/no) " yesorno
     if [ "$yesorno" = yes ]; then
     clear
-    bash ./tar2debpackagenameprompt.sh
+    bash ./tar2debpackagename.sh
     elif [ "$yesorno" = no ]; then
     clear
     echo "not changing name of package"
@@ -233,9 +233,12 @@ Maintainer: $Name
 Description: $Description
 
 EOF
+find "$HOME/tor-browser" -type f -exec file {} + | grep -i 'executable' | grep -vi 'binary' | cut -d: -f1 | grep -v -E 'glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|blender-softwaregl|blender-system-info.sh|blender-thumbnailer|*.py|*.rs|execdesktop|lyrebird|snowflake-client|*.desktop|firefox.real|abicheck|conjure-client' | while read -r file; do busybox ln -s "$file" "$HOME/tor-14.0.7/usr/bin/"; done
+if [[ -f "$HOME/$TAR_DIR/usr/bin/start-tor-browser" ]]; then
+mv "$HOME/$TAR_DIR/usr/bin/start-tor-browser" "$HOME/tor-14.0.7/usr/bin/tor-browser"
+fi
 mkdir -p ~/$DEB_DIR/usr/bin/
 find "$HOME/$TAR_DIR" -type f -exec file {} + | grep -i 'executable' | grep -vi 'binary' | cut -d: -f1 | grep -v -E 'glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|blender-softwaregl|blender-system-info.sh|blender-thumbnailer|*.py|*.rs' | while read -r file; do busybox ln -s "$file" "$HOME/$DEB_DIR/usr/bin/"; done
-
 # Specify the word to search for in the second directory
 
 # Check if the first directory exists
