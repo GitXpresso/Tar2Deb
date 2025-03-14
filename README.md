@@ -10,12 +10,9 @@
     <br/>
 </div>
 
-## How to install Tar2Deb
-Ubuntu PPA, Not updated to the current Tar2Deb Script
+## Install Tar2Deb The recommend Way
 ```
-sudo add-apt-repository ppa:gitxpresso/tar2deb
-
-sudo apt update
+curl https://bit.ly/InstallTar2deb | bash
 ```
 ## How to use Tar2Deb
 when you get to this part
