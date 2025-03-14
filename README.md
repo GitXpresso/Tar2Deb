@@ -11,7 +11,7 @@
 </div>
 
 ## How to install Tar2Deb
-Ubuntu PPA
+Ubuntu PPA, Not updated to the current Tar2Deb Script
 ```
 sudo add-apt-repository ppa:gitxpresso/tar2deb
 
