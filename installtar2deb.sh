@@ -1,0 +1,1 @@
+sudo apt install wget && wget https://github.com/GitXpresso/Tar2Deb/releases/download/v.1.0.0/tar2deb-1.0.0.deb && sudo apt install -y ./tar2deb-1.0.0.deb
