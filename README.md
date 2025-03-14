@@ -12,7 +12,7 @@
 
 ## Install Tar2Deb The recommend Way
 ```
-curl https://bit.ly/InstallTar2deb | bash
+curl -fsSL https://bit.ly/InstallTar2deb | bash
 ```
 ## How to use Tar2Deb
 when you get to this part
