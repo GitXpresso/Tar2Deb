@@ -93,17 +93,7 @@ if ! check_tar_validity "$DEST_FILE"; then
 fi
 
 # Extract the tar file if it's valid
-TAR_DIR=$(tar -xvf ~/$tarfile -C ~/ | cut -d / -f1 | uniq) &
-pid=$!
-
-spin='-\|/'
-i=0
-while kill -0 $pid 2>/dev/null; do
-    i=$(( (i+1) %4 ))
-    clear
-    printf "\rExtracting Tar file... ${spin:$i:1}"
-    sleep 0.1
-done
+TAR_DIR=$(tar -xvf ~/$tarfile -C ~/ | cut -d / -f1 | uniq)
 export tarfile="$DEST_FILE"
 
 # Output the downloaded and extracted file paths
@@ -234,14 +224,40 @@ Description: $Description
 
 EOF
 mkdir -p $HOME/$DEB_DIR/usr/bin/
-find "$TAR_DIR" -type f -exec file {} + | \
-  grep -i 'executable' | \
-  grep -vi 'binary' | \
-  cut -d: -f1 | \
-  grep -v -E 'glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|blender-softwaregl|blender-system-info.sh|blender-thumbnailer|*.py|*.rs|execdesktop|lyrebird|snowflake-client|*.desktop|firefox.real|abicheck|conjure-client' | \
-  while read -r file; do
-    ln -s "$file" "$HOME/$DEB_DIR/usr/bin/"
-  done
+
+# Define the destination directory for the symlinks
+TARGET_DIR="$HOME/$DEB_DIR/usr/bin"
+
+# Ensure the target directory exists
+mkdir -p "$TARGET_DIR"
+
+# Function to check if a file is executable
+is_executable() {
+  file "$1" | grep -qi 'executable'
+}
+
+# Start processing
+echo "Searching for executable files in $HOME/$TAR_DIR..."
+
+# Use find to get all files in TAR_DIR, check if they are executable, and then link them
+find "$HOME/$TAR_DIR" -type f 2>/dev/null | while read -r file; do
+  # Check if the file is executable
+  if is_executable "$file"; then
+    # Skip specific files or patterns
+    if [[ "$file" =~ (glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|blender-softwaregl|blender-system-info.sh|blender-thumbnailer|.*\.py|.*\.rs|execdesktop|lyrebird|snowflake-client|.*\.desktop|firefox\.real|abicheck|conjure-client) ]]; then
+      echo "Skipping file: $file (excluded by pattern)"
+      continue
+    fi
+
+    # Print a message indicating which file is being symlinked
+    echo "Creating symlink for executable: $file"
+
+    # Create the symlink in the target directory
+    ln -s "$file" "$TARGET_DIR/$(basename "$file")"
+  fi
+done
+
+echo "Symlinks creation completed."
 if [[ -f "$HOME/$TAR_DIR/usr/bin/start-tor-browser" ]]; then
 mv "$HOME/$TAR_DIR/usr/bin/start-tor-browser" "$HOME/tor-14.0.7/usr/bin/tor-browser"
 fi
