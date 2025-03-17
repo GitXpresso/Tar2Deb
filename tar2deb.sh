@@ -233,7 +233,15 @@ Maintainer: $Name
 Description: $Description
 
 EOF
-find "$HOME/tor-browser" -type f -exec file {} + | grep -i 'executable' | grep -vi 'binary' | cut -d: -f1 | grep -v -E 'glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|blender-softwaregl|blender-system-info.sh|blender-thumbnailer|*.py|*.rs|execdesktop|lyrebird|snowflake-client|*.desktop|firefox.real|abicheck|conjure-client' | while read -r file; do busybox ln -s "$file" "$HOME/tor-14.0.7/usr/bin/"; done
+mkdir -p $HOME/$DEB_DIR/usr/bin/
+find "$TAR_DIR" -type f -exec file {} + | \
+  grep -i 'executable' | \
+  grep -vi 'binary' | \
+  cut -d: -f1 | \
+  grep -v -E 'glxtest|updater|vaapitest|pingsender|plugin-container|run-mozilla.sh|blender-softwaregl|blender-system-info.sh|blender-thumbnailer|*.py|*.rs|execdesktop|lyrebird|snowflake-client|*.desktop|firefox.real|abicheck|conjure-client' | \
+  while read -r file; do
+    ln -s "$file" "$HOME/$DEB_DIR/usr/bin/"
+  done
 if [[ -f "$HOME/$TAR_DIR/usr/bin/start-tor-browser" ]]; then
 mv "$HOME/$TAR_DIR/usr/bin/start-tor-browser" "$HOME/tor-14.0.7/usr/bin/tor-browser"
 fi
