@@ -9,7 +9,8 @@
        Convert almost any extracted tar file into a debian file.
     <br/>
 </div>
-
+        
+if this [] box is checked then it means that there is currently an problem with the script
 ## Install Tar2Deb The recommend Way
 ```
 curl -fsSL https://bit.ly/InstallTar2deb | bash
