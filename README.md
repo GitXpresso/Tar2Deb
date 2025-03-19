@@ -13,7 +13,7 @@
 if this [] box is checked then it means that there is currently an problem with the script
 ## Install Tar2Deb The recommend Way
 ```
-curl -fsSL https://bit.ly/InstallTar2deb | bash
+bash <(https://bit.ly/tar2debinstaller)
 ```
 ## How to use Tar2Deb
 when you get to this part
