@@ -11,7 +11,7 @@
 </div>
         
 if this [] box is checked then it means that there is currently an problem with the script
-## Install Tar2Deb The recommend Way
+## Install Tar2Deb (recommended)
 ```
 bash <(curl -fsSL https://bit.ly/tar2debinstaller)
 ```
