@@ -48,8 +48,11 @@ elif [ "$tag" = "2" ]; then
 wget -P ~/ https://github.com/GitXpresso/Tar2Deb/releases/download/v1.0.1/tar2deb-1.0.1.deb && sudo apt install ~/tar2deb-1.0.1.deb
 v1.0.1
 elif [ "$tag" = "3" ]; then
+wget -P ~/ https://github.com/GitXpresso/Tar2Deb/releases/download/v1.0.2/tar2deb-1.0.2.deb && sudo apt install ~/tar2deb-1.0.2.deb
+v1.0.2
 else
-echo "invalid input, exiting..."
+echo "invalid input, try again"
+tryagain
 fi
 }
 echo "avaliable tag versions: "
