@@ -1,4 +1,4 @@
-functions:
+# functions:
 v1.0.0(){
 read -p "Do you want remove "tar2deb-1.0.0.deb"? (yes/no): " yesorno
 if [ "$yesorno" = "yes" ]; then
