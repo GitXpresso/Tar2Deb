@@ -20,6 +20,8 @@ v1.0.2
 else
 clear
 echo "${BB}invalid input, restarting script${NC}"
+sleep 0.5
+clear
 try_again
 fi    
 }
@@ -76,5 +78,7 @@ v1.0.2
 else
 clear
 echo "${BB}invalid input, restarting script...${NC}"
+sleep 0.5
+clear
 try_again
 fi
