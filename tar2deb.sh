@@ -1,5 +1,114 @@
 #!/bin/bash
+# functions:
+v1(){
+    while true; do
+    read -p "Please enter a Version for your package: " Version
+    
+    if is_number "$Version"; then
+        clear
+        echo "The version of your package is: ${BBlack}$Version${NoColor}"
+        
+        # Ask the user if they want to change the version
+        read -p "Do you want to change the version of your package? (yes/no) " yesorno
+        
+        if [ "$yesorno" = "yes" ]; then
+            clear
+            v1  # Run the script if the answer is "yes"
+            break  # Exit the loop after running the script
+        
+        elif [ "$yesorno" = "no" ]; then
+            clear
+            echo "Not changing the version of the package"
+            clear
+            break  # Exit the loop if the answer is "no"
+        
+        fi
+        
+    else
+        echo "Invalid input. Please enter a valid version number (e.g., 1.0, 1.0.1, etc.)."
+    fi
+done
+}
+M1(){
+    create_full_name() {
+  local input=("$@")
+  local first_name=""
+  local last_name=""
+  local valid_input=true
 
+  # Validate and separate first and last name
+  for word in "${input[@]}"; do
+    if [[ ! "$word" =~ [0-9] ]]; then
+      if [ -z "$first_name" ]; then
+        first_name="$word"
+      elif [ -z "$last_name" ]; then
+        last_name="$word"
+      fi
+    else
+      valid_input=false
+      break
+    fi
+  done
+
+  if [ "$valid_input" = true ] && [ -n "$first_name" ] && [ -n "$last_name" ]; then
+    full_name="$first_name $last_name"
+    echo "Valid full name: $full_name"
+    export Maintainer="$full_name"
+  else
+    echo "Invalid input. Please enter only letters and spaces for the first and last name."
+  fi
+}
+
+# Prompt user for input
+while true; do
+    read -p "Please enter your name or some elses name as the maintainer for the package: " -a Maintainer
+    if IFS=" " create_full_name "${Maintainer[@]}"; then
+        clear
+        read -p "The Maintainer of your package is: ${BBlack}$Maintainer${NoColor} is that correct? if not do you want change it? (yes/no) " yesorno
+    if [ "$yesorno" = yes ]; then
+    clear
+    M1
+    elif [ "$yesorno" = no ]; then
+    clear
+    echo "not changing package maintainer name"
+    break
+    else
+    echo "Not a letter."
+    fi
+        break
+    else
+        echo "Invalid input. Please enter a valid letter."
+    fi
+done
+}
+P1(){
+    is_letter() {
+    # This function checks if the input is only letters or numbers
+    [[ "$1" =~ ^[A-Za-z2]+$ ]]
+}
+
+# Prompt user for input
+while true; do
+    read -p "Please enter the name of your package: " PackageName
+    if is_letter "$PackageName"; then
+        clear
+        echo "The name of your package is: ${BBlack}$PackageName${NoColor}"
+        read -p "Do you want to change the name of your package? (yes/no) " yesorno
+        if [ "$yesorno" = "yes" ]; then
+            clear
+            P1  # Run the script if the answer is "yes"
+            break  # Exit the loop after running the script
+        elif [ "$yesorno" = "no" ]; then
+            clear
+            echo "Not changing the name of the package"
+            clear
+            break  # Exit the loop if the answer is "no"
+        fi
+    else
+        echo "Invalid input. Please enter a valid package name (letters and numbers only)."
+    fi
+done
+}
 # Reset color
 NoColor=$(tput sgr0)
 # Define colors using tput
@@ -25,7 +134,15 @@ echo -e "${BBlack}installing required packages${NoColor}"
 packages=("tar" "wget" "build-essential" "imagemagick" "devscripts" "debhelper" "curl" "bash" "busybox" "libasound-dev")
 
 # Update package list
-sudo apt update
+sudo apt update >/dev/null 2>&1 &
+pid=$!
+spin='-\|/'
+i=0
+while kill -0 $pid 2>/dev/null; do
+    i=$(( (i+1) %4 ))
+    printf "\rUpdating...${spin:$i:1}"
+    sleep 0.1
+done
 clear
 # Loop through each package
 for package in "${packages[@]}"; do
@@ -43,16 +160,14 @@ for package in "${packages[@]}"; do
 done
 clear
 # Edit the Export Variables in order for this file to work successfully
-#!/bin/bash
 
 # Function to check if the tar file can be extracted
 check_tar_validity() {
-    # Try extracting the tar file without actually extracting it
-    tar -tf "$1" &>/dev/null
-    return $?  # Return the result of tar command
+    # Try to list the contents of the tar file to check validity
+    tar -tzf "$1" &>/dev/null
+    return $?  # Return the result of the tar command
 }
 
-# Function for loading animation
 # Prompt the user for the URL of the tar file
 while true; do
     read -p "Please enter the URL of the tar file: " TAR_URL
@@ -75,35 +190,34 @@ tarfile=$(basename "$TAR_URL")
 DEST_FILE="$HOME/$tarfile"
 
 # Download the file using wget
+echo "Downloading tar file from $TAR_URL..."
 wget -P ~/ -nv --progress=bar:force "$TAR_URL" 2>&1 | tee /dev/null | sed -u 's/\([0-9]*\)%/\1%/' | awk '{print "\rDownloading: "$0; fflush();}' > /dev/null &
 pid=$!
 spin='-\|/'
 i=0
 while kill -0 $pid 2>/dev/null; do
     i=$(( (i+1) %4 ))
-    printf "\rDownloading Tar file using wget...${spin:$i:1}"
+    printf "\rDownloading Tar file then extracting tarfile...${spin:$i:1}"
     sleep 0.1
 done
-# Call loading animation in the background
-# Check if the tar file is valid before proceeding
-if ! check_tar_validity "$DEST_FILE"; then
-    clear
-    echo "Error: The downloaded file is not a valid url, executable tar2deb with valid download url"
+
+# Check if the tar file was successfully downloaded
+if [[ ! -f "$DEST_FILE" ]]; then
+    echo "Error: The file could not be downloaded or the file does not exist."
     exit 1
 fi
 
-# Extract the tar file if it's valid
-TAR_DIR=$(tar -xvf ~/$tarfile -C ~/ | cut -d / -f1 | uniq)
-export tarfile="$DEST_FILE"
 
-# Output the downloaded and extracted file paths
+# Extract the tar file if it's valid
+TAR_DIR=$(tar -xvf "$DEST_FILE" -C ~/ | cut -d / -f1 | uniq)
 
 # Clean up by removing the tar file
-rm -rf "$DEST_FILE"
-printf "\nExtraction complete!\n"
+rm -f "$DEST_FILE"
 clear
+
 is_letter() {
-    [[ "$1" =~ ^[Aa-zZ2]+$ ]];
+    # This function checks if the input is only letters or numbers
+    [[ "$1" =~ ^[A-Za-z2]+$ ]]
 }
 
 # Prompt user for input
@@ -112,45 +226,54 @@ while true; do
     if is_letter "$PackageName"; then
         clear
         echo "The name of your package is: ${BBlack}$PackageName${NoColor}"
-        read -p "do you want to change the name of your package? (yes/no) " yesorno
-    if [ "$yesorno" = yes ]; then
-    clear
-    bash ./tar2debpackagename.sh
-    elif [ "$yesorno" = no ]; then
-    clear
-    echo "not changing name of package"
-    clear
-    break
-    fi
+        read -p "Do you want to change the name of your package? (yes/no) " yesorno
+        if [ "$yesorno" = "yes" ]; then
+            clear
+            P1  # Run the script if the answer is "yes"
+            break  # Exit the loop after running the script
+        elif [ "$yesorno" = "no" ]; then
+            clear
+            echo "Not changing the name of the package"
+            clear
+            break  # Exit the loop if the answer is "no"
+        fi
     else
-        echo "Invalid input. Please enter a valid letter."
+        echo "Invalid input. Please enter a valid package name (letters and numbers only)."
     fi
 done
+
+# Function to check if input is a valid number (for version checking)
 is_number() {
-    [[ "$1" =~ ^[0-9+\.]+$ ]];
+    # This function checks if the input is only "-", "a", "b", "c", "d", ".", or digits (0-9)
+    [[ "$1" =~ ^[a-d0-9.-]+$ ]]
 }
 
 # Prompt user for input
 while true; do
     read -p "Please enter a Version for your package: " Version
+    
     if is_number "$Version"; then
         clear
         echo "The version of your package is: ${BBlack}$Version${NoColor}"
-        read -p "do you want to change the version of your package? (yes/no) " yesorno
-    if [ "$yesorno" = yes ]; then
-    clear
-    bash ./tar2debversionprompt.sh
-    elif [ "$yesorno" = no ]; then
-    clear
-    echo "not changing package version"
-    clear
-    break
+        
+        # Ask the user if they want to change the version
+        read -p "Do you want to change the version of your package? (yes/no) " yesorno
+        
+        if [ "$yesorno" = "yes" ]; then
+            clear
+            v1  # Run the script if the answer is "yes"
+            break  # Exit the loop after running the script
+        
+        elif [ "$yesorno" = "no" ]; then
+            clear
+            echo "Not changing the version of the package"
+            clear
+            break  # Exit the loop if the answer is "no"
+        
+        fi
+        
     else
-    echo "Not a number."
-    fi
-        break
-    else
-        echo "Invalid input. Please enter a valid number."
+        echo "Invalid input. Please enter a valid version number (e.g., 1.0, 1.0.1, etc.)."
     fi
 done
 export Name="$PackageName"
@@ -198,7 +321,7 @@ while true; do
         read -p "The Maintainer of your package is: ${BBlack}$Maintainer${NoColor} is that correct? if not do you want change it? (yes/no) " yesorno
     if [ "$yesorno" = yes ]; then
     clear
-    bash ./tar2debmaintainerprompt.sh
+    M1
     elif [ "$yesorno" = no ]; then
     clear
     echo "not changing package maintainer name"
@@ -413,19 +536,19 @@ read -p "Do you want to rename all files in subdirectories into one name? (yes/n
 
 if [[ "$rename_all" == "yes" ]]; then
     read -p "Enter the base name for all files: " base_name
-    counter=1
 
     for dir in "${dest_dirs[@]}"; do
         for file in "$dir"/*; do
             if [[ -f "$file" ]]; then
                 extension="${file##*.}"
-                mv "$file" "$dir/$base_name_$counter.$extension"
-                ((counter++))
+                mv "$file" "$dir/$base_name.$extension"  # Use the same base name for all files
+                echo "Renamed '$file' to '${BBLACK}$base_name.$extension${NoColor}'"  # Optional: for debugging/confirmation
             fi
         done
     done
     echo "All files renamed successfully."
 fi
+
 
 # If user said no, ask if they want to rename individual files
 read -p "Do you want to rename specific files instead? (yes/no): " rename_individual
@@ -524,7 +647,7 @@ echo "Main executable found: $MAIN_EXEC"
 desktop_file=$(find "$target_dir" -type f -name "*.desktop")
 
 if [[ -z "$desktop_file" ]]; then
-    read -p "${BBlack}No .desktop file found. Do you want to create one?${NoColor}(yes/no): " create_desktop
+    read -p "${BBlack}No .desktop file found. Do you want to create one? ${NoColor}(yes/no): " create_desktop
     if [[ "$create_desktop" == "yes" ]]; then
         # Ask if the user wants to choose an icon
         read -p "Do you want to pick an icon for the desktop file? (yes/no): " pick_icon
@@ -581,6 +704,7 @@ if [[ -z "$desktop_file" ]]; then
         echo "Desktop file created at: $desktop_file_path"
     fi
 fi
+clear
 echo "${BBlack}Building Deb File${NoColor}"
 dpkg-deb --build ~/$DEB_DIR
 debfile="$HOME/$DEB_DIR.deb"
@@ -617,6 +741,7 @@ while true; do
                 # Ensure no extension is included
                 new_filename="${filerename%.deb}"  # Remove any .deb if accidentally added
                 mv "$debfile" "$HOME/$new_filename.deb"
+                "$HOME/$new_filename.deb"
                 echo "File renamed to $new_filename.deb"
                 break
             fi
@@ -637,12 +762,15 @@ while true; do
                     # Ensure no extension is included
                     new_filename2="${filerename2%.deb}"  # Remove any .deb if accidentally added
                     mv "$debfile" "$HOME/$new_filename2.deb"
+                    chmod +x "$HOME/$new_filename2.deb"
                     echo "File renamed to $new_filename2.deb"
+                    clear
                     break
                 fi
             done
             break
-        elif [[ "$yesorno2" == "yes" ]]; then
+        elif [[ "$yesorno2" == "yes" ]]; thumbnailer
+            clear
             echo "Not changing filename."
             break
         fi
