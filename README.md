@@ -50,3 +50,5 @@ what is your package about?; or just type anything: convert almost any extracted
 ```
 Then it will add the executable files to $HOME/$DEB_DIR/usr/bin
 then it will ask you the user if you to rename the image files moved to $HOME/$DEB_DIR/usr/share/icons/hicolor/(image_dimensions)/apps to be renamed to one word entered by you the user
+## Tar2Deb Flavours
+Tar2Deb Flavours is tar2deb specifically edited for different projects like [Zen Deb, Zen browser unoffical debian files](https://github.com/gitxpresso/ZenDeb)
